@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_egg_timer/egg_timer_controls.dart';
+import 'package:flutter_egg_timer/egg_timer_dial.dart';
 import 'package:flutter_egg_timer/egg_timer_time_display.dart';
-import 'package:flutter_egg_timer/fluttery/framing.dart';
+
+const Color GRADIENT_TOP = Color(0xFFF5F5F5);
+const Color GRADIENT_BOTTOM = Color(0xFFE8E8E8);
 
 void main() => runApp(MyApp());
 
@@ -15,27 +18,23 @@ class MyApp extends StatelessWidget {
         fontFamily: 'BebasNeue',
       ),
       home: Scaffold(
-        body: Center(
-          child: Column(
-            children: [
-              EggTimerTimeDisplay(),
-              RandomColorBlock(
-                width: double.infinity,
-                child: Padding(
-                  padding: EdgeInsets.all(30.0),
-                  child: AspectRatio(
-                    aspectRatio: 1.0,
-                    child: RandomColorBlock(
-                      width: double.infinity,
-                    ),
-                  ),
+        body: Container(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  colors: [GRADIENT_TOP, GRADIENT_BOTTOM],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter)),
+          child: Center(
+            child: Column(
+              children: [
+                EggTimerTimeDisplay(),
+                EggTimerDial(),
+                Expanded(
+                  child: Container(),
                 ),
-              ),
-              Expanded(
-                child: Container(),
-              ),
-              EggTimerControls()
-            ],
+                EggTimerControls()
+              ],
+            ),
           ),
         ),
       ),
