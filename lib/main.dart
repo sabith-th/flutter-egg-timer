@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_egg_timer/egg_timer_time_display.dart';
 import 'package:flutter_egg_timer/fluttery/framing.dart';
 
 void main() => runApp(MyApp());
@@ -16,10 +17,7 @@ class MyApp extends StatelessWidget {
         body: Center(
           child: Column(
             children: [
-              RandomColorBlock(
-                width: double.infinity,
-                height: 150.0,
-              ),
+              EggTimerTimeDisplay(),
               RandomColorBlock(
                 width: double.infinity,
                 child: Padding(
