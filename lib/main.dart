@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_egg_timer/egg_timer_controls.dart';
 import 'package:flutter_egg_timer/egg_timer_dial.dart';
 import 'package:flutter_egg_timer/egg_timer_time_display.dart';
-
-const Color GRADIENT_TOP = Color(0xFFF5F5F5);
-const Color GRADIENT_BOTTOM = Color(0xFFE8E8E8);
+import 'package:flutter_egg_timer/constants.dart';
 
 void main() => runApp(MyApp());
 
@@ -21,7 +19,7 @@ class MyApp extends StatelessWidget {
         body: Container(
           decoration: BoxDecoration(
               gradient: LinearGradient(
-                  colors: [GRADIENT_TOP, GRADIENT_BOTTOM],
+                  colors: [gradientTop, gradientBottom],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter)),
           child: Center(
