@@ -6,7 +6,7 @@ class EggTimerButton extends StatelessWidget {
 
   EggTimerButton({
     this.icon,
-    this.text
+    this.text,
   });
 
   @override
@@ -26,11 +26,12 @@ class EggTimerButton extends StatelessWidget {
             Text(
               text,
               style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 3.0),
-            )
+                color: Colors.black,
+                fontSize: 20.0,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 3.0,
+              ),
+            ),
           ],
         ),
       ),

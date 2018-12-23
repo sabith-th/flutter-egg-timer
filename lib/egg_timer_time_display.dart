@@ -14,11 +14,12 @@ class _EggTimerTimeDisplayState extends State<EggTimerTimeDisplay> {
         '09:11',
         textAlign: TextAlign.center,
         style: TextStyle(
-            color: Colors.black,
-            fontFamily: 'BebasNeue',
-            fontSize: 150.0,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 10.0),
+          color: Colors.black,
+          fontFamily: 'BebasNeue',
+          fontSize: 150.0,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 10.0,
+        ),
       ),
     );
   }

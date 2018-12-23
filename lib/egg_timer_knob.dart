@@ -1,11 +1,14 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_egg_timer/constants.dart';
 
 class EggTimerDialKnob extends StatefulWidget {
   final rotationPercent;
 
-  const EggTimerDialKnob({this.rotationPercent});
+  const EggTimerDialKnob({
+    this.rotationPercent,
+  });
 
   @override
   _EggTimerDialKnobState createState() => _EggTimerDialKnobState();
@@ -28,23 +31,26 @@ class _EggTimerDialKnobState extends State<EggTimerDialKnob> {
           decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: LinearGradient(
-                  colors: [gradientTop, gradientBottom],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter),
+                colors: [gradientTop, gradientBottom],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
               boxShadow: [
                 BoxShadow(
-                    color: Color(0x44000000),
-                    blurRadius: 2.0,
-                    spreadRadius: 1.0,
-                    offset: Offset(0.0, 1.0))
+                  color: Color(0x44000000),
+                  blurRadius: 2.0,
+                  spreadRadius: 1.0,
+                  offset: Offset(0.0, 1.0),
+                ),
               ]),
           child: Container(
             decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: Color(0xFFDFDFDF),
-                  width: 1.5,
-                )),
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: Color(0xFFDFDFDF),
+                width: 1.5,
+              ),
+            ),
             child: Center(
               child: Transform(
                 transform: Matrix4.rotationZ(2 * pi * widget.rotationPercent),
@@ -68,7 +74,9 @@ class ArrowPainter extends CustomPainter {
   final Paint dialArrowPaint;
   final double rotationPercent;
 
-  ArrowPainter({this.rotationPercent}) : dialArrowPaint = new Paint() {
+  ArrowPainter({
+    this.rotationPercent,
+  }) : dialArrowPaint = new Paint() {
     dialArrowPaint.color = Colors.black;
     dialArrowPaint.style = PaintingStyle.fill;
   }

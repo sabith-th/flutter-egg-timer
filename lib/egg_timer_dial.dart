@@ -1,17 +1,22 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_egg_timer/egg_timer_knob.dart';
-import 'package:flutter_egg_timer/constants.dart';
 import 'dart:math';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_egg_timer/constants.dart';
+import 'package:flutter_egg_timer/egg_timer_knob.dart';
+import 'package:flutter_egg_timer/fluttery/gestures.dart';
 
 class EggTimerDial extends StatefulWidget {
   final Duration currentTime;
   final Duration maxTime;
   final int ticksPerSection;
+  final Function(Duration) onTimeSelected;
 
-  const EggTimerDial(
-      {this.currentTime = const Duration(minutes: 0),
-      this.maxTime = const Duration(minutes: 35),
-      this.ticksPerSection = 5});
+  const EggTimerDial({
+    this.currentTime = const Duration(minutes: 0),
+    this.maxTime = const Duration(minutes: 35),
+    this.ticksPerSection = 5,
+    this.onTimeSelected,
+  });
 
   @override
   _EggTimerDialState createState() => _EggTimerDialState();
@@ -24,7 +29,11 @@ class _EggTimerDialState extends State<EggTimerDial> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return DialTurnGestureDetector(
+      currentTime: widget.currentTime,
+      maxTime: widget.maxTime,
+      onTimeSelected: widget.onTimeSelected,
+      child: Container(
         width: double.infinity,
         child: Padding(
           padding: EdgeInsets.all(30.0),
@@ -32,18 +41,21 @@ class _EggTimerDialState extends State<EggTimerDial> {
             aspectRatio: 1.0,
             child: Container(
               decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                      colors: [gradientTop, gradientBottom],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Color(0x44000000),
-                        blurRadius: 2.0,
-                        spreadRadius: 1.0,
-                        offset: Offset(0.0, 1.0))
-                  ]),
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  colors: [gradientTop, gradientBottom],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Color(0x44000000),
+                    blurRadius: 2.0,
+                    spreadRadius: 1.0,
+                    offset: Offset(0.0, 1.0),
+                  ),
+                ],
+              ),
               child: Stack(
                 children: <Widget>[
                   Container(
@@ -52,19 +64,80 @@ class _EggTimerDialState extends State<EggTimerDial> {
                     padding: EdgeInsets.all(55.0),
                     child: CustomPaint(
                       painter: TickPainter(
-                          tickCount: widget.maxTime.inMinutes,
-                          ticksPerSection: widget.ticksPerSection),
+                        tickCount: widget.maxTime.inMinutes,
+                        ticksPerSection: widget.ticksPerSection,
+                      ),
                     ),
                   ),
                   Padding(
-                      padding: EdgeInsets.all(65.0),
-                      child:
-                          EggTimerDialKnob(rotationPercent: _rotationPercent()))
+                    padding: EdgeInsets.all(65.0),
+                    child: EggTimerDialKnob(
+                      rotationPercent: _rotationPercent(),
+                    ),
+                  ),
                 ],
               ),
             ),
           ),
-        ));
+        ),
+      ),
+    );
+  }
+}
+
+class DialTurnGestureDetector extends StatefulWidget {
+  final currentTime;
+  final maxTime;
+  final child;
+  final Function(Duration) onTimeSelected;
+
+  const DialTurnGestureDetector({
+    this.currentTime,
+    this.maxTime,
+    this.child,
+    this.onTimeSelected,
+  });
+
+  @override
+  _DialTurnGestureDetectorState createState() =>
+      _DialTurnGestureDetectorState();
+}
+
+class _DialTurnGestureDetectorState extends State<DialTurnGestureDetector> {
+  PolarCoord startDragCoord;
+  Duration startDragTime;
+
+  _onRadialDragStart(PolarCoord coord) {
+    startDragCoord = coord;
+    startDragTime = widget.currentTime;
+  }
+
+  _onRadialDragUpdate(PolarCoord coord) {
+    if (startDragCoord != null) {
+      final angleDiff = coord.angle - startDragCoord.angle;
+      final anglePercent = angleDiff / (2 * pi);
+      final timeDiffInSeconds =
+          (anglePercent * widget.maxTime.inSeconds).round();
+      final newTime = new Duration(
+        seconds: startDragTime.inSeconds + timeDiffInSeconds,
+      );
+      print('New Time in Mins: ${newTime.inMinutes}');
+      widget.onTimeSelected(newTime);
+    }
+  }
+
+  _onRadialDragEnd() {
+    startDragCoord = null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RadialDragGestureDetector(
+      onRadialDragStart: _onRadialDragStart,
+      onRadialDragUpdate: _onRadialDragUpdate,
+      onRadialDragEnd: _onRadialDragEnd,
+      child: widget.child,
+    );
   }
 }
 
@@ -85,9 +158,14 @@ class TickPainter extends CustomPainter {
     this.tickInset = 0.0,
   })  : tickPaint = new Paint(),
         textPainter = new TextPainter(
-            textAlign: TextAlign.center, textDirection: TextDirection.ltr),
+          textAlign: TextAlign.center,
+          textDirection: TextDirection.ltr,
+        ),
         textStyle = const TextStyle(
-            color: Colors.black, fontFamily: 'BebasNeue', fontSize: 20.0) {
+          color: Colors.black,
+          fontFamily: 'BebasNeue',
+          fontSize: 20.0,
+        ) {
     tickPaint.color = Colors.black;
     tickPaint.strokeWidth = 1.5;
   }
@@ -133,7 +211,9 @@ class TickPainter extends CustomPainter {
         }
 
         textPainter.paint(
-            canvas, Offset(-textPainter.width / 2, -textPainter.height / 2));
+          canvas,
+          Offset(-textPainter.width / 2, -textPainter.height / 2),
+        );
 
         canvas.restore();
       }
