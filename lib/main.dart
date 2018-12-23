@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_egg_timer/egg_timer.dart';
 import 'package:flutter_egg_timer/egg_timer_controls.dart';
 import 'package:flutter_egg_timer/egg_timer_dial.dart';
 import 'package:flutter_egg_timer/egg_timer_time_display.dart';
@@ -6,8 +7,19 @@ import 'package:flutter_egg_timer/constants.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   // This widget is the root of your application.
+  @override
+  MyAppState createState() {
+    return new MyAppState();
+  }
+}
+
+class MyAppState extends State<MyApp> {
+  final EggTimer eggTimer;
+
+  MyAppState() : eggTimer = new EggTimer(maxTime: Duration(minutes: 35));
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -26,7 +38,11 @@ class MyApp extends StatelessWidget {
             child: Column(
               children: [
                 EggTimerTimeDisplay(),
-                EggTimerDial(),
+                EggTimerDial(
+                  currentTime: eggTimer.currentTime,
+                  maxTime: eggTimer.maxTime,
+                  ticksPerSection: 5,
+                ),
                 Expanded(
                   child: Container(),
                 ),

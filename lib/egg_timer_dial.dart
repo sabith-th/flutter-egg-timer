@@ -4,11 +4,24 @@ import 'package:flutter_egg_timer/constants.dart';
 import 'dart:math';
 
 class EggTimerDial extends StatefulWidget {
+  final Duration currentTime;
+  final Duration maxTime;
+  final int ticksPerSection;
+
+  const EggTimerDial(
+      {this.currentTime = const Duration(minutes: 0),
+      this.maxTime = const Duration(minutes: 35),
+      this.ticksPerSection = 5});
+
   @override
   _EggTimerDialState createState() => _EggTimerDialState();
 }
 
 class _EggTimerDialState extends State<EggTimerDial> {
+  _rotationPercent() {
+    return widget.currentTime.inSeconds / widget.maxTime.inSeconds;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -38,11 +51,15 @@ class _EggTimerDialState extends State<EggTimerDial> {
                     height: double.infinity,
                     padding: EdgeInsets.all(55.0),
                     child: CustomPaint(
-                      painter: TickPainter(),
+                      painter: TickPainter(
+                          tickCount: widget.maxTime.inMinutes,
+                          ticksPerSection: widget.ticksPerSection),
                     ),
                   ),
                   Padding(
-                      padding: EdgeInsets.all(65.0), child: EggTimerDialKnob())
+                      padding: EdgeInsets.all(65.0),
+                      child:
+                          EggTimerDialKnob(rotationPercent: _rotationPercent()))
                 ],
               ),
             ),
