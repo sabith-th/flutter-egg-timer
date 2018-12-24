@@ -3,17 +3,19 @@ import 'package:flutter/material.dart';
 class EggTimerButton extends StatelessWidget {
   final IconData icon;
   final String text;
+  final Function() onPressed;
 
   EggTimerButton({
     this.icon,
     this.text,
+    this.onPressed,
   });
 
   @override
   Widget build(BuildContext context) {
     return FlatButton(
       splashColor: Color(0x2200000000),
-      onPressed: () {},
+      onPressed: onPressed,
       child: Padding(
         padding: EdgeInsets.all(25.0),
         child: Row(
