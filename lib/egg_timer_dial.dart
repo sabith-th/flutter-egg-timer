@@ -10,12 +10,14 @@ class EggTimerDial extends StatefulWidget {
   final Duration maxTime;
   final int ticksPerSection;
   final Function(Duration) onTimeSelected;
+  final Function(Duration) onDialStopTurning;
 
   const EggTimerDial({
     this.currentTime = const Duration(minutes: 0),
     this.maxTime = const Duration(minutes: 35),
     this.ticksPerSection = 5,
     this.onTimeSelected,
+    this.onDialStopTurning,
   });
 
   @override
@@ -33,10 +35,11 @@ class _EggTimerDialState extends State<EggTimerDial> {
       currentTime: widget.currentTime,
       maxTime: widget.maxTime,
       onTimeSelected: widget.onTimeSelected,
+      onDialStopTurning: widget.onDialStopTurning,
       child: Container(
         width: double.infinity,
         child: Padding(
-          padding: EdgeInsets.all(30.0),
+          padding: EdgeInsets.only(left: 45.0, right: 45.0),
           child: AspectRatio(
             aspectRatio: 1.0,
             child: Container(
@@ -90,12 +93,14 @@ class DialTurnGestureDetector extends StatefulWidget {
   final maxTime;
   final child;
   final Function(Duration) onTimeSelected;
+  final Function(Duration) onDialStopTurning;
 
   const DialTurnGestureDetector({
     this.currentTime,
     this.maxTime,
     this.child,
     this.onTimeSelected,
+    this.onDialStopTurning,
   });
 
   @override
@@ -106,6 +111,7 @@ class DialTurnGestureDetector extends StatefulWidget {
 class _DialTurnGestureDetectorState extends State<DialTurnGestureDetector> {
   PolarCoord startDragCoord;
   Duration startDragTime;
+  Duration selectedTime;
 
   _onRadialDragStart(PolarCoord coord) {
     startDragCoord = coord;
@@ -117,17 +123,19 @@ class _DialTurnGestureDetectorState extends State<DialTurnGestureDetector> {
       final angleDiff = coord.angle - startDragCoord.angle;
       final anglePercent = angleDiff / (2 * pi);
       final timeDiffInSeconds =
-          (anglePercent * widget.maxTime.inSeconds).round();
-      final newTime = new Duration(
+      (anglePercent * widget.maxTime.inSeconds).round();
+      selectedTime = new Duration(
         seconds: startDragTime.inSeconds + timeDiffInSeconds,
       );
-      print('New Time in Mins: ${newTime.inMinutes}');
-      widget.onTimeSelected(newTime);
+      widget.onTimeSelected(selectedTime);
     }
   }
 
   _onRadialDragEnd() {
+    widget.onDialStopTurning(selectedTime);
     startDragCoord = null;
+    startDragTime = null;
+    selectedTime = null;
   }
 
   @override
@@ -156,7 +164,8 @@ class TickPainter extends CustomPainter {
     this.tickCount = 35,
     this.ticksPerSection = 5,
     this.tickInset = 0.0,
-  })  : tickPaint = new Paint(),
+  })
+      : tickPaint = new Paint(),
         textPainter = new TextPainter(
           textAlign: TextAlign.center,
           textDirection: TextDirection.ltr,

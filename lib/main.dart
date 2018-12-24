@@ -16,14 +16,30 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final EggTimer eggTimer;
+  EggTimer eggTimer;
 
-  _MyAppState() : eggTimer = new EggTimer(maxTime: Duration(minutes: 35));
+  _MyAppState() {
+    eggTimer = new EggTimer(
+      maxTime: Duration(minutes: 35),
+      onTimerUpdate: _onTimerUpdate,
+    );
+  }
 
   _onTimeSelected(Duration newTime) {
     setState(() {
       eggTimer.currentTime = newTime;
     });
+  }
+
+  _onDialStopTurning(Duration newTime) {
+    setState(() {
+      eggTimer.currentTime = newTime;
+      eggTimer.resume();
+    });
+  }
+
+  _onTimerUpdate() {
+    setState(() {});
   }
 
   @override
@@ -36,10 +52,12 @@ class _MyAppState extends State<MyApp> {
       home: Scaffold(
         body: Container(
           decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [gradientTop, gradientBottom],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter)),
+            gradient: LinearGradient(
+              colors: [gradientTop, gradientBottom],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
           child: Center(
             child: Column(
               children: [
@@ -49,6 +67,7 @@ class _MyAppState extends State<MyApp> {
                   maxTime: eggTimer.maxTime,
                   ticksPerSection: 5,
                   onTimeSelected: _onTimeSelected,
+                  onDialStopTurning: _onDialStopTurning,
                 ),
                 Expanded(
                   child: Container(),
