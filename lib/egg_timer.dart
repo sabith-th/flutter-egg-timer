@@ -26,10 +26,18 @@ class EggTimer {
 
   resume() {
     if (state != EggTimerState.running) {
+      if (state == EggTimerState.ready) {
+        _currentTime = _roundToNearestMinute(_currentTime);
+        lastStartTime = _currentTime;
+      }
       state = EggTimerState.running;
       stopwatch.start();
       _tick();
     }
+  }
+
+  _roundToNearestMinute(duration) {
+    return new Duration(minutes: (duration.inSeconds / 60).round());
   }
 
   pause() {
